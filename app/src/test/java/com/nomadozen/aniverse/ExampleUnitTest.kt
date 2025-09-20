@@ -1,4 +1,4 @@
-package com.example.aniverse
+package com.nomadozen.aniverse
 
 import org.junit.Test
 

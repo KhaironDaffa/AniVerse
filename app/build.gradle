@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.aniverse'
+    namespace 'com.nomadozen.aniverse'
     compileSdk 36
 
     defaultConfig {
-        applicationId "com.example.aniverse"
+        applicationId "com.nomadozen.aniverse"
         minSdk 24
         targetSdk 36
         versionCode 1
