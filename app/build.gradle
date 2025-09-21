@@ -1,8 +1,18 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'androidx.navigation.safeargs.kotlin'
 }
+
+def vMajor = findProperty("versionMajor") as Integer
+def vPhase = findProperty("versionPhase") as Integer
+def vCode = findProperty("versionCode") as Integer
+
+static def buildDate(){
+    return new Date().format("ddMMyy-HHmm")
+}
+
+def vName = "${vMajor}.${vPhase}.${vCode}-${buildDate()}"
 
 android {
     namespace 'com.nomadozen.aniverse'
@@ -12,16 +22,29 @@ android {
         applicationId "com.nomadozen.aniverse"
         minSdk 24
         targetSdk 36
-        versionCode 1
-        versionName "1.0"
-
+        versionCode vCode
+        versionName vName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    tasks.configureEach { task ->
+        if (task.name.contains("AndroidTest")) {
+            task.enabled = false
+        }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            debuggable true
+            minifyEnabled true
+            shrinkResources true
         }
     }
     compileOptions {
@@ -32,25 +55,30 @@ android {
         jvmTarget = '21'
     }
     buildFeatures {
-        compose true
+        viewBinding true
     }
 }
 
 dependencies {
 
-    implementation libs.androidx.core.ktx
-    implementation libs.androidx.lifecycle.runtime.ktx
-    implementation libs.androidx.activity.compose
-    implementation platform(libs.androidx.compose.bom)
-    implementation libs.androidx.compose.ui
-    implementation libs.androidx.compose.ui.graphics
-    implementation libs.androidx.compose.ui.tooling.preview
-    implementation libs.androidx.compose.material3
-    testImplementation libs.junit
-    androidTestImplementation libs.androidx.junit
-    androidTestImplementation libs.androidx.espresso.core
-    androidTestImplementation platform(libs.androidx.compose.bom)
-    androidTestImplementation libs.androidx.compose.ui.test.junit4
-    debugImplementation libs.androidx.compose.ui.tooling
-    debugImplementation libs.androidx.compose.ui.test.manifest
+    implementation "androidx.core:core-ktx:1.17.0"
+
+    //Lifecycle
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.9.4"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.9.4"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4"
+
+    //Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:2.9.4"
+    implementation "androidx.navigation:navigation-ui-ktx:2.9.4"
+
+    implementation "androidx.appcompat:appcompat:1.7.1"
+
+    implementation "com.google.android.material:material:1.13.0"
+    implementation 'androidx.activity:activity:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    testImplementation "junit:junit:4.13.2"
+    androidTestImplementation "androidx.test.ext:junit:1.3.0"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.7.0"
 }
